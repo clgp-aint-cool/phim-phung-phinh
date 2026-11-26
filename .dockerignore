@@ -1,0 +1,6 @@
+# Không đưa vào image: key, dữ liệu Top 10 test trên máy local, file không cần cho web
+.env
+web/data/
+updater/
+k8s/
+.claude/

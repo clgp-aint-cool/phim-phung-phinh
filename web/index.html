@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Phim Phúng Phính</title>
+<link rel="stylesheet" href="style.css?v=20">
+</head>
+<body>
+<header>
+  <a href="#/" class="logo">Phim Phúng Phính</a>
+  <nav>
+    <a data-list="" href="#/list">Mới cập nhật</a>
+    <a id="nav-top" href="#/top">Top 10</a>
+    <a data-list="phim-le" href="#/list?type=phim-le">Phim lẻ</a>
+    <a data-list="phim-bo" href="#/list?type=phim-bo">Phim bộ</a>
+    <a data-list="tv-shows" href="#/list?type=tv-shows">TV Shows</a>
+    <a data-list="anime" href="#/anime">Anime</a>
+    <select id="sel-the-loai" data-type="the-loai"><option value="">Thể loại</option></select>
+    <select id="sel-quoc-gia" data-type="quoc-gia"><option value="">Quốc gia</option></select>
+    <button id="reset-filters" type="button" title="Bỏ lọc thể loại và quốc gia" hidden>✕ Bỏ lọc</button>
+  </nav>
+  <form id="search">
+    <input name="q" placeholder="Tìm phim..." required>
+    <button>Tìm</button>
+  </form>
+</header>
+<main id="app">Đang tải...</main>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js"></script>
+<script src="app.js?v=20"></script>
+<script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
+</body>
+</html>

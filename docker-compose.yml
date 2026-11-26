@@ -1,0 +1,51 @@
+# Chạy trên server (EC CMC):  docker compose up -d --build
+# Caddy tự xin và gia hạn chứng chỉ HTTPS (Let's Encrypt) cho motdongphim.xyz
+services:
+  web:
+    build: .
+    # Nếu đã push image lên Docker Hub thì dùng dòng dưới và xóa "build: ."
+    # image: <tên_docker_hub>/phim-web:1.0.1
+    restart: always
+    expose:
+      - "8080"
+    depends_on:
+      - updater
+    volumes:
+      - topdata:/usr/share/nginx/html/data:ro   # top.json do "updater" ghi
+
+  # Dịch vụ nền (updater/server.py):
+  #  - Top 10 (Phim lẻ / Phim bộ / Anime) từ TMDB mỗi 6 giờ -> /data/top.json  (cần TMDB_API_KEY trong .env)
+  #  - Quét toàn bộ KKPhim mỗi 24 giờ -> /data/catalog.json, phục vụ API sắp xếp /api/list
+  updater:
+    image: python:3.12-alpine
+    restart: always
+    command: ["python", "-u", "/app/server.py"]
+    environment:
+      TMDB_API_KEY: ${TMDB_API_KEY:-}
+      TOP_INTERVAL_HOURS: ${TOP_INTERVAL_HOURS:-6}
+      CATALOG_INTERVAL_HOURS: ${CATALOG_INTERVAL_HOURS:-24}
+      DATA_DIR: /data
+    expose:
+      - "8000"
+    volumes:
+      - ./updater:/app:ro
+      - topdata:/data
+
+  caddy:
+    image: caddy:2.8-alpine
+    restart: always
+    depends_on:
+      - web
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"   # HTTP/3
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data      # chứa chứng chỉ, KHÔNG xóa volume này
+      - caddy_config:/config
+
+volumes:
+  topdata:
+  caddy_data:
+  caddy_config:

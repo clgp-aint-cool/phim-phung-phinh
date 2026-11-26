@@ -1,0 +1,14 @@
+{
+	# Email nhận thông báo khi chứng chỉ sắp hết hạn (nên điền email của bạn)
+	# email ban@example.com
+}
+
+motdongphim.xyz {
+	encode zstd gzip
+	reverse_proxy web:8080
+}
+
+# www -> chuyển về tên miền chính (cần bản ghi A "www" trỏ cùng IP)
+www.motdongphim.xyz {
+	redir https://motdongphim.xyz{uri} permanent
+}

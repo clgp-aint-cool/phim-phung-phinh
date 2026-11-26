@@ -1,0 +1,38 @@
+# Chạy ĐẦY ĐỦ chức năng trên máy local (không có Caddy/HTTPS):
+#   docker compose -f docker-compose.local.yml up -d --build
+#   -> mở http://localhost:8080
+# Dừng:  docker compose -f docker-compose.local.yml down
+#
+# Giống bản server (docker-compose.yml) nhưng:
+#  - web mở thẳng cổng 8080 ra máy (đổi số bên trái nếu cổng bận, vd "8090:8080")
+#  - dữ liệu Top 10 + chỉ mục sắp xếp lưu ở ./web/data trên máy -> giữ lại giữa các lần chạy,
+#    không phải quét lại KKPhim ~7 phút mỗi lần khởi động
+#  - TMDB_API_KEY lấy từ file .env (cùng thư mục)
+name: phim_lau_local
+
+services:
+  web:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      - updater
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./web/data:/usr/share/nginx/html/data:ro
+
+  updater:
+    image: python:3.12-alpine
+    restart: unless-stopped
+    command: ["python", "-u", "/app/server.py"]
+    environment:
+      TMDB_API_KEY: ${TMDB_API_KEY:-}
+      TOP_INTERVAL_HOURS: ${TOP_INTERVAL_HOURS:-6}
+      CATALOG_INTERVAL_HOURS: ${CATALOG_INTERVAL_HOURS:-24}
+      DATA_DIR: /data
+      PYTHONDONTWRITEBYTECODE: "1"
+    expose:
+      - "8000"
+    volumes:
+      - ./updater:/app:ro
+      - ./web/data:/data

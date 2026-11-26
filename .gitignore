@@ -1,0 +1,11 @@
+# Bí mật: khoá TMDB và cấu hình riêng của từng máy
+.env
+
+# Dữ liệu sinh ra khi chạy (Top 10 + chỉ mục ~15 MB), tự tạo lại được
+web/data/
+
+# Python / hệ điều hành / công cụ
+__pycache__/
+*.pyc
+.DS_Store
+.claude/
